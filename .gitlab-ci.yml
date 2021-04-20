@@ -1,6 +1,5 @@
 stages:
   - containerize
-  - containerize_develop
 
 containerize:
   stage: containerize
