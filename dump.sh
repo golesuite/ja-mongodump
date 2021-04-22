@@ -1,7 +1,6 @@
 #!/bin/bash 
 
-DUMP_DIR=/var/backup
-mkdir $DUMP_DIR
+DUMP_DIR=/var/backups
 
 variables_failed(){
 	echo "Please check that the following variables are defined:"
@@ -21,6 +20,7 @@ variables_failed(){
 [[ -z ${SLEEP_TIME+x} ]] && SLEEP_TIME="10800"
 
 while :; do
+	sleep 120
 	# mongodb dump full
 	mongodump \
 		--uri=mongodb://"$ME_CONFIG_MONGODB_ADMINUSERNAME":"$ME_CONFIG_MONGODB_ADMINPASSWORD"@"$ME_CONFIG_MONGODB_SERVER":"$ME_CONFIG_MONGODB_PORT" \
