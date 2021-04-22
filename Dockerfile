@@ -14,3 +14,5 @@ RUN cd /tmp/ ; curl -O https://dl.google.com/dl/cloudsdk/channels/rapid/download
 RUN mkdir /opt/ja-mongodump
 WORKDIR /opt/ja-mongodump
 COPY dump.sh /opt/ja-mongodump
+
+CMD ["./dump.sh"]
