@@ -20,6 +20,7 @@ variables_failed(){
 [[ -z ${SLEEP_TIME+x} ]] && SLEEP_TIME="10800"
 
 while :; do
+	echo "starting ... sleeping for 120 seconds"
 	sleep 120
 	# mongodb dump full
 	mongodump \
@@ -28,5 +29,6 @@ while :; do
 
 	touch $DUMP_DIR/backup_ok.tmp
 
+	echo "sleeping $SLEEP_TIME"
 	sleep "$SLEEP_TIME"
 done
