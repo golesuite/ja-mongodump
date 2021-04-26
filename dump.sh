@@ -1,5 +1,7 @@
 #!/bin/bash 
 
+export PATH="$PATH:/opt/google-cloud-sdk/bin"
+
 variables_failed(){
 	echo "Please check that the following variables are defined:"
 	echo "  ME_CONFIG_MONGODB_ADMINUSERNAME"
