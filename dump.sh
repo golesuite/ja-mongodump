@@ -29,5 +29,5 @@ mongodump \
 	-o "$DUMP_DIR"
 
 # upload mongodump to google bucket
-gcloud auth activate-service-account --project-id=$PROJECT_ID --key-file=/etc/gcloud/key.json
+gcloud auth activate-service-account --project=$PROJECT_ID --key-file=/etc/gcloud/key.json
 gsutil rsync -r /var/backups/ "$GS_BUCKET"
