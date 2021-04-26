@@ -1,34 +1,31 @@
 #!/bin/bash 
 
-DUMP_DIR=/var/backups
-
 variables_failed(){
 	echo "Please check that the following variables are defined:"
 	echo "  ME_CONFIG_MONGODB_ADMINUSERNAME"
 	echo "  ME_CONFIG_MONGODB_ADMINPASSWORD"
 	echo "  ME_CONFIG_MONGODB_SERVER"
 	echo "  ME_CONFIG_MONGODB_PORT"
-	echo "  SLEEP_TIME (default value: 10800 seconds)"
+	echo "  GS_BUCKET"
+	echo "  PROJECT_ID"
+	echo "  K8S_CLUSTER"
+	echo "  K8S_NAMESPACE"
 	exit 1
 }
+
+DUMP_DIR=/var/backups/"$K8S_CLUSTER"/"$K8S_NAMESPACE"/$(date "+%Y-%m-%d")/
+mkdir -p "$DUMP_DIR"
 
 [[ -z ${ME_CONFIG_MONGODB_ADMINUSERNAME+x} ]] && variables_failed
 [[ -z ${ME_CONFIG_MONGODB_ADMINPASSWORD+x} ]] && variables_failed
 [[ -z ${ME_CONFIG_MONGODB_SERVER+x} ]] && variables_failed
 [[ -z ${ME_CONFIG_MONGODB_PORT+x} ]] && variables_failed
 
-[[ -z ${SLEEP_TIME+x} ]] && SLEEP_TIME="10800"
+# mongodb dump full
+mongodump \
+	--uri=mongodb://"$ME_CONFIG_MONGODB_ADMINUSERNAME":"$ME_CONFIG_MONGODB_ADMINPASSWORD"@"$ME_CONFIG_MONGODB_SERVER":"$ME_CONFIG_MONGODB_PORT" \
+	-o "$DUMP_DIR"
 
-while :; do
-	echo "starting ... sleeping for 120 seconds"
-	sleep 120
-	# mongodb dump full
-	mongodump \
-		--uri=mongodb://"$ME_CONFIG_MONGODB_ADMINUSERNAME":"$ME_CONFIG_MONGODB_ADMINPASSWORD"@"$ME_CONFIG_MONGODB_SERVER":"$ME_CONFIG_MONGODB_PORT" \
-		-o "$DUMP_DIR"/dump_mmp5_$(date "+%Y-%m-%d")
-
-	touch $DUMP_DIR/backup_ok.tmp
-
-	echo "sleeping $SLEEP_TIME"
-	sleep "$SLEEP_TIME"
-done
+# upload mongodump to google bucket
+gcloud auth activate-service-account --project-id=$PROJECT_ID --key-file=/etc/gcloud/key.json
+gsutil rsync -r /var/backups/ "$GS_BUCKET"
