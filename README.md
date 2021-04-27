@@ -1,11 +1,9 @@
 ja-mongodbump
 ==============
 
-While True looping to dump and send a mongo databases to google bucket.
+1. Execute a complete dump mongodb
+2. Send the dump output to a google bucket. Please see DUMP_DIR variable inside a dump.sh for more information about dump structure.
 
-Working with env variables.
-
-This script is part a CI/CD DevOps pipeline.
 
 | variables | default value | required | description |
 |:---------:|:------------:|:---------:|:-----------:|
